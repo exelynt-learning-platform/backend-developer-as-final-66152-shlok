@@ -51,7 +51,7 @@ public class ReservationService {
 
     }
 
-    public Page<Reservation> getUserReservation(String username, Pageable pageable){
+    public Page<Reservation> getUserReservations(String username, Pageable pageable){
       User user=userRepository.findByUsername(username)
               .orElseThrow(()->new RuntimeException("User Not Found"));
         return reservationRepository.findByUserId(user.getId(), pageable);
