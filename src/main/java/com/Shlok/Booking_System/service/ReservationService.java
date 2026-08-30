@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Service
@@ -55,5 +56,18 @@ public class ReservationService {
       User user=userRepository.findByUsername(username)
               .orElseThrow(()->new RuntimeException("User Not Found"));
         return reservationRepository.findByUserId(user.getId(), pageable);
+    }
+
+    public Page<Reservation> getAllReservationsWithFilters(Status status, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable) {
+        return reservationRepository.findWithFilters(status, minPrice, maxPrice, pageable);
+    }
+
+    // 2. Method for Admin to approve or cancel reservations
+    public Reservation updateReservationStatus(Long id, Status newStatus) {
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Reservation not found"));
+
+        reservation.setStatus(newStatus);
+        return reservationRepository.save(reservation);
     }
 }
